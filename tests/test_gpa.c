@@ -3,32 +3,47 @@
 #include "courseResult.h"
 #include "gpa.h"
 
-int testSemesterCGPA()
+int testCGPA()
 {
-    Course courses[4];
+    Course courses[3] = {
+        createCourse("CSE 4107", "Structured Programming I", 3.0, 1),
+        createCourse("CSE 4108", "Structured Programming I Lab", 1.5, 1),
+        createCourse("CSE 4203", "Discrete Mathematics", 3.0, 2)
+    };
 
-    courses[0] = createCourse("A", "A", 3.0, 1);
-    courses[1] = createCourse("B", "B", 3.0, 1);
-    courses[2] = createCourse("C", "C", 3.0, 2);
-    courses[3] = createCourse("D", "D", 3.0, 2);
+    CourseResult results[3] = {
+        createCompletedCourseResult(&courses[0], 240),
+        createCompletedCourseResult(&courses[1], 105),
+        createIncompleteCourseResult(&courses[2])
+    };
 
-    CourseResult results[4];
+    double cgpa = calculateGPA(results, 3);
 
-    results[0] = createCompletedCourseResult(&courses[0], 300);
-    results[1] = createCompletedCourseResult(&courses[1], 240);
-    results[2] = createCompletedCourseResult(&courses[2], 210);
-    results[3] = createCompletedCourseResult(&courses[3], 180);
+    return cgpa > 3.83 && cgpa < 3.84;
+}
 
-    CourseResult filtered[10];
+int testGradePoint()
+{
+    Course course = createCourse("CSE 4107", "Structured Programming I", 3.0, 1);
+    CourseResult result = createCompletedCourseResult(&course, 240);
 
-    filterCourseResultsBySemester(results, 4, 1, filtered);
+    return getGradePoint(result) == 4.00;
+}
 
-    double gpa = calculateGPA(
-        filtered,
-        countCourseResultsBeforeNull(filtered, 10)
-    );
-    printf("GPA = %.2f\n",gpa);
-    return gpa > 3.99 && gpa < 4.01;
+int testLetterGrade()
+{
+    Course course = createCourse("CSE 4108", "Structured Programming I Lab", 1.5, 1);
+    CourseResult result = createCompletedCourseResult(&course, 105);
+
+    return getLetterGrade(result)[0] == 'A' &&
+           getLetterGrade(result)[1] == '-';
+}
+
+int testRequiredGPA()
+{
+    double required = calculateRequiredGPA(3.50, 90, 3.60, 30);
+
+    return required > 3.89 && required < 3.91;
 }
 
 int main()
@@ -39,8 +54,19 @@ int main()
     int total = 0;
 
     total++;
+    if (testCGPA())
+        passed++;
 
-    if (testSemesterCGPA())
+    total++;
+    if (testGradePoint())
+        passed++;
+
+    total++;
+    if (testLetterGrade())
+        passed++;
+
+    total++;
+    if (testRequiredGPA())
         passed++;
 
     printf("Passed %d/%d tests\n", passed, total);
