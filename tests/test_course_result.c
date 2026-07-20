@@ -1,60 +1,65 @@
 #include <stdio.h>
+#include <string.h>
 #include "course.h"
 #include "courseResult.h"
 
-int testCompletedResult()
+int testSorting()
 {
-    Course course = createCourse("CSE 4202", "Structured Programming II Lab", 1.5);
-    CourseResult result = createCompletedCourseResult(&course, 120);
+    Course courses[3];
 
-    return result.completed == 1;
+    courses[0] = createCourse("A", "A", 3.0, 3);
+    courses[1] = createCourse("B", "B", 3.0, 1);
+    courses[2] = createCourse("C", "C", 3.0, 2);
+
+    CourseResult results[3];
+
+    results[0] = createCompletedCourseResult(&courses[0], 100);
+    results[1] = createCompletedCourseResult(&courses[1], 100);
+    results[2] = createCompletedCourseResult(&courses[2], 100);
+
+    sortCourseResultsBySemester(results, 3);
+
+    return results[0].course->semester == 1 &&
+           results[1].course->semester == 2 &&
+           results[2].course->semester == 3;
 }
 
-int testCompletedMarks()
+int testFiltering()
 {
-    Course course = createCourse("CSE 4202", "Structured Programming II Lab", 1.5);
-    CourseResult result = createCompletedCourseResult(&course, 120);
+    Course courses[4];
 
-    return result.marks == 120;
-}
+    courses[0] = createCourse("A", "A", 3.0, 1);
+    courses[1] = createCourse("B", "B", 3.0, 2);
+    courses[2] = createCourse("C", "C", 3.0, 2);
+    courses[3] = createCourse("D", "D", 3.0, 3);
 
-int testIncompleteMarks()
-{
-    Course course = createCourse("CSE 4202", "Structured Programming II Lab", 1.5);
-    CourseResult incomplete = createIncompleteCourseResult(&course);
+    CourseResult results[4];
 
-    return incomplete.marks == 0.0;
-}
+    for (int i = 0; i < 4; i++)
+    {
+        results[i] = createCompletedCourseResult(&courses[i], 100);
+    }
 
-int testIncompleteResult()
-{
-    Course course = createCourse("CSE 4202", "Structured Programming II Lab", 1.5);
-    CourseResult incomplete = createIncompleteCourseResult(&course);
+    CourseResult filtered[10];
 
-    return incomplete.completed == 0;
+    filterCourseResultsBySemester(results, 4, 2, filtered);
+
+    return countCourseResultsBeforeNull(filtered, 10) == 2;
 }
 
 int main()
 {
-    printf("Course result module tests\n");
+    printf("Course Result module tests\n");
 
     int passed = 0;
     int total = 0;
 
     total++;
-    if (testCompletedResult())
+    if (testSorting())
         passed++;
 
     total++;
-    if (testCompletedMarks())
-        passed++;
-
-    total++;
-    if (testIncompleteMarks())
-        passed++;
-
-    total++;
-    if (testIncompleteResult())
+    if (testFiltering())
         passed++;
 
     printf("Passed %d/%d tests\n", passed, total);
