@@ -5,8 +5,8 @@ int main()
 {
     double current_cgpa;
     double completed_credits;
-    double target_cgpa;
-    double remaining_credits;
+    double expected_gpa;
+    double future_credits;
 
     printf("Current CGPA: ");
     scanf("%lf", &current_cgpa);
@@ -14,17 +14,17 @@ int main()
     printf("Completed credits: ");
     scanf("%lf", &completed_credits);
 
-    printf("Target CGPA: ");
-    scanf("%lf", &target_cgpa);
+    printf("Expected future GPA: ");
+    scanf("%lf", &expected_gpa);
 
-    printf("Remaining credits: ");
-    scanf("%lf", &remaining_credits);
+    printf("Future credits: ");
+    scanf("%lf", &future_credits);
 
-    printf("Required GPA: %.2f\n",
-           calculateRequiredGPA(current_cgpa,
-                                completed_credits,
-                                target_cgpa,
-                                remaining_credits));
+    printf("Expected CGPA: %.2f\n",
+           calculateExpectedCGPA(current_cgpa,
+                                 completed_credits,
+                                 expected_gpa,
+                                 future_credits));
 
     return 0;
 }
